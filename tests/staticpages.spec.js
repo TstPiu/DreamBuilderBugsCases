@@ -28,7 +28,7 @@ const expectedProductSchema = {
   },
 };
 
-test.only("Static Extra pages schema validation", async ({page}) => {
+test("Static Extra pages schema validation", async ({page}) => {
   // Iterate over static pages without breadcrumbs
   for (const url of staticPagesUrlsWOBreadcrumbs) {
     await page.goto(`/${url}`);
