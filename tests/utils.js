@@ -56,7 +56,84 @@ export const globalVariables = {
   reviewCount: "29",
 };
 
+export const expectedSchemas = {
+  LocalBusiness: {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": `${globalVariables.website_url}#localbusiness`,
+    name: `${globalVariables.default_city} Party Bus Company`,
+    url: globalVariables.website_url,
+    logo: "https://portlandpartybuscompany.com/assets/portland-party-bus-company-logo.png",
+    telephone: `+1-${globalVariables.mobile_num_text}`,
+    description: `${globalVariables.default_city} Party Bus Company is a highly rated provider of limousine buses, sprinter vans, charter buses, minibuses & party buses in ${globalVariables.default_city}, ${globalVariables.default_state} open 24/7/365. Experienced reservation agents are available at ${globalVariables.mobile_num_text}`,
+    priceRange: "$$",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Downtown",
+      addressLocality: globalVariables.default_city,
+      addressRegion: globalVariables.default_address_region,
+      addressCountry: globalVariables.default_country,
+      areaServed: `${globalVariables.default_city}, ${globalVariables.default_address_region}`,
+    },
+    openingHoursSpecification: [
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday",
+          "Saturday",
+          "Sunday",
+        ],
+        opens: "00:00",
+        closes: "23:59",
+      },
+    ],
+  },
+  Product: {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: `${globalVariables.default_city} Party Bus Company`,
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: globalVariables.ratingValue,
+      bestRating: globalVariables.bestRating,
+      reviewCount: globalVariables.reviewCount,
+    },
+  },
+  WebSite: {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    name: `${globalVariables.default_city} Party Bus Company`,
+    url: globalVariables.website_url,
+  },
+  // BreadcrumbList: {
+  //   "@context": "https://schema.org/",
+  //   "@type": "BreadcrumbList",
+  //   itemListElement: [
+  //     {
+  //       "@type": "ListItem",
+  //       position: 1,
+  //       name: "Home",
+  //       item: globalVariables.website_url,
+  //     },
+  //     {
+  //       "@type": "ListItem",
+  //       position: 2,
+  //       name: /.*/,
+  //       item: /.*/,
+  //     },
+  //   ],
+  // },
+};
+
 export function compareObjects(expected, actual, schemaType, path, diffs) {
+  // If the expected schema is not defined, we cannot compare it.
+  if (expected === undefined) {
+    return;
+  }
   // Skip logo differences
   if (typeof expected !== "object" || expected === null) {
     // primitive or null
