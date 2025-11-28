@@ -1,0 +1,20 @@
+{
+  "name": "dreambuilderbugscases",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "schema:validate": "node src/index.js",
+    "schema:validate:sitemap": "node src/index.js https://portlandpartybuscompany.com/sitemap/",
+    "test": "npx playwright test"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.56.1",
+    "@types/node": "^24.10.1",
+    "playwright": "^1.56.1"
+  }
+}
