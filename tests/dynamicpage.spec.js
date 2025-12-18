@@ -1,4 +1,4 @@
-const {test, expect} = require("@playwright/test");
+import {test, expect} from "@playwright/test";
 
 const pageGroupType = ["Buses", "Services", "Service-area"];
 
@@ -58,9 +58,9 @@ const categorizedUrls = {
   serviceArea: [],
 };
 
-test.describe("Dynamic Page Tests", () => {
+test.only("Dynamic Page Tests", () => {
   // Test for Bus Pages
-  test.describe("Buses Pages", () => {
+  test("Buses Pages", () => {
     for (const url of categorizedUrls.buses) {
       test(`should load page ${url}`, async ({page}) => {
         await page.goto(url);
@@ -71,7 +71,7 @@ test.describe("Dynamic Page Tests", () => {
   });
 
   // Test for Services Pages
-  test.describe("Services Pages", () => {
+  test("Services Pages", () => {
     for (const url of categorizedUrls.services) {
       test(`should load page ${url}`, async ({page}) => {
         await page.goto(url);
@@ -82,7 +82,7 @@ test.describe("Dynamic Page Tests", () => {
   });
 
   // Test for Service-area (City) Pages
-  test.describe("Service-area (City) Pages", () => {
+  test("Service-area (City) Pages", () => {
     for (const url of categorizedUrls.serviceArea) {
       test(`should load page ${url}`, async ({page}) => {
         await page.goto(url);

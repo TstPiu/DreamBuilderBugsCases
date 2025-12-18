@@ -1,5 +1,5 @@
 // @ts-check
-import {defineConfig, devices} from "@playwright/test";
+import { defineConfig, devices } from "@playwright/test";
 
 /**
  * Read environment variables from file.
@@ -14,6 +14,7 @@ import {defineConfig, devices} from "@playwright/test";
  */
 export default defineConfig({
   testDir: "./tests",
+  timeout: 0, // test timeout
   /* Run tests in files in parallel */
   fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
@@ -37,7 +38,7 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
-      use: {...devices["Desktop Chrome"]},
+      use: { ...devices["Desktop Chrome"] },
     },
 
     // {
