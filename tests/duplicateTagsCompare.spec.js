@@ -119,7 +119,7 @@ function generateReport(pageUrl, h2Results, pResults) {
  * Note: This function is no longer used for individual page reports
  * Only the summary report is generated
  */
-function saveSummaryReport(summaryReport, directory = 'Duplicate Tag Reports') {
+function saveSummaryReport(summaryReport, directory = 'My Report') {
     // Create directory if it doesn't exist
     if (!fs.existsSync(directory)) {
         fs.mkdirSync(directory, { recursive: true });

@@ -3,6 +3,7 @@ import * as path from "path";
 
 /**
  * Reusable function to save test reports as JSON files
+ * Enhanced version with better logging and timestamp-based filenames
  * @param {Object} report - The report object to save
  * @param {string} [dirName="My Report"] - Directory name where report will be saved
  * @param {string} [fileName] - Optional custom filename (without extension). If not provided, uses timestamp
@@ -16,13 +17,13 @@ export function saveReportToJson(
   try {
     // Create directory if it doesn't exist
     if (!fs.existsSync(dirName)) {
-      fs.mkdirSync(dirName, {recursive: true});
+      fs.mkdirSync(dirName, { recursive: true });
     }
 
     // Generate filename with timestamp if not provided
     if (!fileName) {
-      const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-      fileName = `test-report-${timestamp}`;
+      const timestamp = new Date().getTime();
+      fileName = `summary_${timestamp}`;
     }
 
     // Ensure .json extension
@@ -36,11 +37,90 @@ export function saveReportToJson(
     // Write report to file
     fs.writeFileSync(filePath, JSON.stringify(report, null, 2));
 
+    // Enhanced logging - show where the report was saved
+    console.log(`\n📄 Report saved to: ${filePath}`);
+
     return filePath;
   } catch (error) {
     console.error(`✗ Failed to save report: ${error.message}`);
     throw error;
   }
+}
+
+/**
+ * Discover all internal links on a website
+ * Crawls the site starting from baseUrl and returns all unique internal URLs
+ * @param {Object} page - Playwright page object
+ * @param {string} baseUrl - Base URL to start crawling from
+ * @returns {Promise<Array<string>>} - Array of unique internal page URLs
+ */
+export async function discoverAllPages(page, baseUrl) {
+  const visited = new Set();
+  const toVisit = [baseUrl];
+  const allPages = new Set();
+
+  // Parse base URL to get origin and pathname
+  const baseUrlObj = new URL(baseUrl);
+  const baseOrigin = baseUrlObj.origin;
+
+  console.log(`\n🔍 Starting to discover pages from: ${baseUrl}`);
+
+  while (toVisit.length > 0) {
+    const currentUrl = toVisit.shift();
+
+    // Skip if already visited
+    if (visited.has(currentUrl)) {
+      continue;
+    }
+
+    visited.add(currentUrl);
+    allPages.add(currentUrl);
+
+    console.log(`📄 Discovering links on: ${currentUrl}`);
+
+    try {
+      // Navigate to the page
+      await page.goto(currentUrl, { waitUntil: 'networkidle', timeout: 30000 });
+
+      // Extract all links from the page
+      const links = await page.$$eval('a[href]', (anchors, origin) => {
+        return anchors.map(anchor => {
+          try {
+            const href = anchor.getAttribute('href');
+            if (!href) return null;
+
+            // Create absolute URL
+            const absoluteUrl = new URL(href, window.location.href);
+
+            // Only return if same origin
+            if (absoluteUrl.origin === origin) {
+              // Remove hash fragments
+              absoluteUrl.hash = '';
+              return absoluteUrl.href;
+            }
+            return null;
+          } catch (e) {
+            return null;
+          }
+        }).filter(url => url !== null);
+      }, baseOrigin);
+
+      // Add new links to the queue
+      links.forEach(link => {
+        if (!visited.has(link) && !toVisit.includes(link)) {
+          toVisit.push(link);
+        }
+      });
+
+    } catch (error) {
+      console.log(`⚠️  Error discovering links on ${currentUrl}: ${error.message}`);
+    }
+  }
+
+  const pagesArray = Array.from(allPages).sort();
+  console.log(`\n✅ Discovery complete! Found ${pagesArray.length} unique pages\n`);
+
+  return pagesArray;
 }
 
 export const globalVariables = {
