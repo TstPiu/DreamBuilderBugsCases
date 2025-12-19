@@ -47,18 +47,6 @@ async function validateAnchorTags(page, url) {
             failedAnchors: failedAnchors.length > 0 ? failedAnchors : undefined
         };
 
-        // Log results for this page
-        console.log(`\n📄 Page: ${url}`);
-        console.log(`   Total anchor tags: ${totalAnchors}`);
-        console.log(`   ✅ PASS: ${passCount}`);
-        console.log(`   ❌ FAIL: ${failCount}`);
-        if (failCount > 0) {
-            console.log(`   Failed anchors:`);
-            failedAnchors.forEach(anchor => {
-                console.log(`      - Index ${anchor.index}: "${anchor.text}"`);
-            });
-        }
-
         return report;
 
     } catch (error) {
